@@ -36,7 +36,6 @@ def part2(data):
     total = 0
     for group in groups:
         sets = [set(sack) for sack in group]
-        print(sets)
         common_01 = sets[0].intersection(sets[1])
         common_012 = common_01.intersection(sets[2])
         total += item_score("".join(common_012))
@@ -53,7 +52,7 @@ def solve(puzzle_input):
 
 if __name__ == "__main__":
     path = f"input{DAY}.txt"
-    print(f"{path}:")
+    print(f"using {path}")
     puzzle_input = pathlib.Path(path).read_text().strip()
     solutions = solve(puzzle_input)
     print("\n".join(str(solution) for solution in solutions))
