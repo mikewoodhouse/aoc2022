@@ -2,8 +2,7 @@ import pathlib
 
 import pytest
 
-import day04 as aoc
-
+import day04.day04 as aoc
 
 DAY = "04"
 
