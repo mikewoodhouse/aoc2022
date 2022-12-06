@@ -1,14 +1,22 @@
 import pathlib
+from collections import defaultdict, deque
 
 from parse import parse
 
 
+def crates_in_stacks(s: str) -> dict:
+    return {int(1 + (i - 1) / 4): s[i + 1] for i in range(len(s)) if s.startswith("[", i)}
+
+
 class Stack:
     def __init__(self):
-        self.creates = []
+        self.crates = deque()
 
     def pop(self, how_many) -> list:
-        pass
+        return self.crates.pop()
+
+    def push(self, crate):
+        self.crates.appendleft(crate)
 
 
 class Order:
@@ -18,8 +26,19 @@ class Order:
         self.__dict__ = self.__dict__ | parsed.named
 
 
-def build_stacks(stack_lines):
-    pass
+def build_stacks(stack_lines: list[str]):
+    lines = deque()
+    for line in stack_lines:
+        if line.startswith("1"):
+            break
+        lines.appendleft(line)
+    stacks = defaultdict(Stack)
+    while lines:
+        line = lines.pop()
+        crate_assignments = crates_in_stacks(line)
+        for stack, crate in crate_assignments.items():
+            stacks[stack].push(crate)
+    return stacks
 
 
 def parse_input(puzzle_input):
@@ -27,16 +46,19 @@ def parse_input(puzzle_input):
     lines = puzzle_input.split("\n")
     stack_line_count = 0
     for line in lines:
+        print(line)
         if not line:
             stack_line_count += 1
             break
-    stacks = build_stacks(lines[stack_line_count:])
-    orders = [Order(line) for line in lines[:stack_line_count]]
+    stacks = build_stacks(lines[:stack_line_count])
+    orders = [Order(line) for line in lines[stack_line_count + 1 :]]
     return stacks, orders
 
 
 def part1(data):
     """Solve part 1."""
+    stacks, orders = data
+    print(stacks)
 
 
 def part2(data):
