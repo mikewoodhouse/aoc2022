@@ -1,7 +1,8 @@
 import pathlib
 
-import aoc
 import pytest
+
+import day05.aoc as aoc
 
 
 @pytest.fixture

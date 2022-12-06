@@ -7,3 +7,4 @@ exclude =
     venv
     __pycache__
     .vscode
+ignore = E203

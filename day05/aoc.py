@@ -1,36 +1,38 @@
-import pathlib
 from collections import defaultdict, deque
 
 from parse import parse
 
 
 def crates_in_stacks(s: str) -> dict:
-    return {int(1 + (i - 1) / 4): s[i + 1] for i in range(len(s)) if s.startswith("[", i)}
+    return {1 + int(((i + 1) / 4)): s[i + 1] for i in range(len(s)) if s.startswith("[", i)}
 
 
 class Stack:
     def __init__(self):
         self.crates = deque()
 
-    def pop(self, how_many) -> list:
+    def pop(self) -> list:
         return self.crates.pop()
 
     def push(self, crate):
         self.crates.appendleft(crate)
 
+    def __repr__(self) -> str:
+        return ",".join(self.crates)
+
 
 class Order:
     def __init__(self, txt: str):
         parsed = parse("move {crates:d} from {source:d} to {target:d}", txt)
-        print(parsed.named)
         self.__dict__ = self.__dict__ | parsed.named
+
+    def __repr__(self) -> str:
+        return f"move {self.crates} from {self.source} to {self.target}"
 
 
 def build_stacks(stack_lines: list[str]):
     lines = deque()
     for line in stack_lines:
-        if line.startswith("1"):
-            break
         lines.appendleft(line)
     stacks = defaultdict(Stack)
     while lines:
@@ -41,24 +43,34 @@ def build_stacks(stack_lines: list[str]):
     return stacks
 
 
-def parse_input(puzzle_input):
-    """Parse input."""
-    lines = puzzle_input.split("\n")
+def parse_input(lines):
     stack_line_count = 0
     for line in lines:
-        print(line)
-        if not line:
-            stack_line_count += 1
+        stack_line_count += 1
+        if line.strip().startswith("1"):
             break
-    stacks = build_stacks(lines[:stack_line_count])
-    orders = [Order(line) for line in lines[stack_line_count + 1 :]]
+    stacks = build_stacks(lines[: stack_line_count - 1])
+    order_lines = lines[stack_line_count + 1 :]
+    orders = [Order(line.strip()) for line in order_lines]
     return stacks, orders
 
 
 def part1(data):
     """Solve part 1."""
     stacks, orders = data
-    print(stacks)
+    for order in orders:
+        # print(order)
+        for _ in range(order.crates):
+            source = stacks[order.source]
+            target = stacks[order.target]
+            # print(source, ">", target)
+            target.crates.append(source.pop())
+            # print(source, "|", target)
+
+    # for i in range(len(stacks)):
+    #     print(i + 1, stacks[i + 1])
+
+    return "".join(stacks[i].crates[-1] for i in range(1, len(stacks) + 1))
 
 
 def part2(data):
@@ -74,6 +86,6 @@ def solve(puzzle_input):
 
 
 if __name__ == "__main__":
-    puzzle_input = pathlib.Path("input.txt").read_text().strip()
+    puzzle_input = open("input.txt").readlines()
     solutions = solve(puzzle_input)
     print("\n".join(str(solution) for solution in solutions))
