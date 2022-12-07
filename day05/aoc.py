@@ -15,7 +15,7 @@ class Stack:
         return self.crates.pop()
 
     def push(self, crate):
-        self.crates.append(crate)
+        self.crates.insert(0, crate)
 
     def __repr__(self) -> str:
         return ",".join(self.crates)
@@ -28,6 +28,11 @@ class Order:
 
     def __repr__(self) -> str:
         return f"move {self.crates} from {self.source} to {self.target}"
+
+
+def print_stacks(stacks):
+    for i in range(1, len(stacks) + 1):
+        print(i, stacks[i])
 
 
 def build_stacks(stack_lines: list[str]):
@@ -58,6 +63,7 @@ def parse_input(lines):
 def part1(data):
     """Solve part 1."""
     stacks, orders = data
+    print_stacks(stacks)
     for order in orders:
         for _ in range(order.crates):
             source = stacks[order.source]
@@ -85,15 +91,16 @@ def part2(data):
 
 
 def solve(puzzle_input):
-    """Solve the puzzle for the given input."""
+
     data = parse_input(puzzle_input)
     solution1 = part1(data)
-    data = parse_input(puzzle_input)
-    solution2 = part2(data)
-    return solution1, solution2
+    print(solution1)
+
+    # data = parse_input(puzzle_input)
+    # solution2 = part2(data)
+    # print(solution2)
 
 
 if __name__ == "__main__":
-    puzzle_input = open("example.txt").readlines()
-    solutions = solve(puzzle_input)
-    print("\n".join(str(solution) for solution in solutions))
+    puzzle_input = open("input.txt").readlines()
+    solve(puzzle_input)
