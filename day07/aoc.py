@@ -66,7 +66,15 @@ def solve_part1(data: list[str]):
 
 
 def solve_part2(data):
-    ...
+    tree = build_tree(data)
+    dirs = []
+    traverse(tree, dirs)
+    available_space = 70_000_000 - tree.filesize
+    additional_needed = 30_000_000 - available_space
+    print(f"need another {additional_needed}")
+    large_enough = filter(lambda d: d.filesize >= additional_needed, dirs)
+    best = sorted(large_enough, key=lambda d: d.filesize)[0]
+    print(best.filesize)
 
 
 if __name__ == "__main__":
