@@ -63,7 +63,6 @@ def parse_input(lines):
 def part1(data):
     """Solve part 1."""
     stacks, orders = data
-    print_stacks(stacks)
     for order in orders:
         for _ in range(order.crates):
             source = stacks[order.source]
@@ -76,16 +75,17 @@ def part1(data):
 def part2(data):
     """Solve part 2."""
     stacks, orders = data
-    for id in range(1, len(stacks) + 1):
-        print(id, stacks[id])
+    # print_stacks(stacks)
     for order in orders:
+        # print(order)
         source = stacks[order.source]
         target = stacks[order.target]
-        print(f"{order.source}: {source} -> {order.target}: {target}")
-        print(f"source.crates[-{order.crates} :] = {source.crates[:order.crates]}")
-        crates_to_move = [source.pop() for _ in order.crates]
-        target.crates.extend(crates_to_move)
-        print(f"{order.source}: {source} && {order.target}: {target}")
+        # print("crates to move:", source.crates[-order.crates :])
+        popped_crates = [source.pop() for _ in range(order.crates)]
+        popped_crates.reverse()
+        target.crates.extend(popped_crates)
+        # print(source, popped_crates, target)
+        # print_stacks(stacks)
 
     return "".join(stacks[i].crates[-1] for i in range(1, len(stacks) + 1))
 
@@ -94,11 +94,11 @@ def solve(puzzle_input):
 
     data = parse_input(puzzle_input)
     solution1 = part1(data)
-    print(solution1)
+    print("solution 1:", solution1)
 
-    # data = parse_input(puzzle_input)
-    # solution2 = part2(data)
-    # print(solution2)
+    data = parse_input(puzzle_input)
+    solution2 = part2(data)
+    print("solution 2:", solution2)
 
 
 if __name__ == "__main__":
