@@ -5,15 +5,21 @@ import pytest
 
 
 @pytest.fixture
-def example():
+def example1():
     puzzle_input = pathlib.Path("example1.txt").read_text().strip().split("\n")
     return aoc.parse_input(puzzle_input)
 
 
-def test_parse_example1(example):
+@pytest.fixture
+def example2():
+    puzzle_input = pathlib.Path("example2.txt").read_text().strip().split("\n")
+    return aoc.parse_input(puzzle_input)
+
+
+def test_parse_example1(example1):
     """Test that input is parsed properly."""
-    assert len(example) == 8
-    assert isinstance(example[0], aoc.Move)
+    assert len(example1) == 8
+    assert isinstance(example1[0], aoc.Move)
 
 
 def test_parse_line():
@@ -51,18 +57,19 @@ def test_parse_line():
 def test_catch_up(t, t2):
     h = (0, 0)
     d = (h[0] - t[0], h[1] - t[1])
-    # mv = aoc.TAIL_MOVES[d]
     mv = aoc.tail_vector(*d)
     new_t = aoc.catch_up_to(h, t)
     assert new_t == t2, f"{d=} {t=}, expected {t2=} got {new_t} {mv=}"
 
 
-def test_part1_example1(example):
+def test_part1_example1(example1):
     """Test part 1 on example input."""
-    assert aoc.part1(example) == 13
+    assert aoc.part1(example1) == 13
 
 
-@pytest.mark.skip()
-def test_part2_example2(example):
-    """Test part 2 on example input."""
-    ...
+def test_part2_example1(example1):
+    assert aoc.part2(example1) == 1
+
+
+def test_part2_example2(example2):
+    assert aoc.part2(example2) == 36

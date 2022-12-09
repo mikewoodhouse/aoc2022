@@ -19,15 +19,7 @@ def parse_line(line):
 
 
 def parse_input(puzzle_input):
-
-    moves = [Move(**parse_line(line)) for line in puzzle_input if line]
-
-    print("U", sum(m.steps for m in moves if m.move == "U"))
-    print("D", sum(m.steps for m in moves if m.move == "D"))
-    print("L", sum(m.steps for m in moves if m.move == "L"))
-    print("R", sum(m.steps for m in moves if m.move == "R"))
-
-    return moves
+    return [Move(**parse_line(line)) for line in puzzle_input if line]
 
 
 MOVES = {
@@ -35,30 +27,6 @@ MOVES = {
     "D": (-1, 0),
     "L": (0, -1),
     "R": (0, 1),
-}
-
-TAIL_MOVES = {
-    (-2, -1): (-1, -1),
-    (-2, 0): (-1, 0),
-    (-2, 1): (-1, 1),
-    (-1, -2): (-1, -1),
-    (-1, -1): (0, 0),
-    (-1, 0): (0, 0),
-    (-1, 1): (0, 0),
-    (-1, 2): (-1, 1),
-    (0, -2): (0, -1),
-    (0, -1): (0, 0),
-    (0, 0): (0, 0),
-    (0, 1): (0, 0),
-    (0, 2): (0, 1),
-    (1, -2): (1, -1),
-    (1, -1): (0, 0),
-    (1, 0): (0, 0),
-    (1, 1): (0, 0),
-    (1, 2): (1, 1),
-    (2, -1): (1, -1),
-    (2, 0): (1, 0),
-    (2, 1): (1, 1),
 }
 
 
@@ -77,34 +45,27 @@ def move(from_pos, by):
 def catch_up_to(head, tail):
     dx = head[0] - tail[0]
     dy = head[1] - tail[1]
-    # return move(tail, TAIL_MOVES[(dx, dy)])
     return move(tail, tail_vector(dx, dy))
 
 
-def part1(data):
-    h = (0, 0)
-    t = (0, 0)
-    visited = {t}
-    for m in data:
-        # print(m)
-        for _ in range(m.steps):
-            h = move(h, MOVES[m.move])
-            t = catch_up_to(h, t)
-            visited.add(t)
-            # print(f"{h=}, {t=}, {len(visited)=}")
-    return len(visited)
-
-
-def part2(data):
-    rope = [(0, 0) for _ in range(10)]
-    visited = {rope[9]}
+def solve_for_rope(data, rope_len: int):
+    rope = [(0, 0) for _ in range(rope_len)]
+    visited = {rope[-1]}
     for m in data:
         for _ in range(m.steps):
             rope[0] = move(rope[0], MOVES[m.move])
             for k in range(1, len(rope)):
                 rope[k] = catch_up_to(rope[k - 1], rope[k])
-            visited.add(rope[9])
+            visited.add(rope[-1])
     return len(visited)
+
+
+def part1(data):
+    return solve_for_rope(data, 2)
+
+
+def part2(data):
+    return solve_for_rope(data, 10)
 
 
 def solve(puzzle_input):
