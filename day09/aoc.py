@@ -96,7 +96,15 @@ def part1(data):
 
 
 def part2(data):
-    """Solve part 2."""
+    rope = [(0, 0) for _ in range(10)]
+    visited = {rope[9]}
+    for m in data:
+        for _ in range(m.steps):
+            rope[0] = move(rope[0], MOVES[m.move])
+            for k in range(1, len(rope)):
+                rope[k] = catch_up_to(rope[k - 1], rope[k])
+            visited.add(rope[9])
+    return len(visited)
 
 
 def solve(puzzle_input):

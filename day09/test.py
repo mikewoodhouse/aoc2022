@@ -6,7 +6,7 @@ import pytest
 
 @pytest.fixture
 def example():
-    puzzle_input = pathlib.Path("example.txt").read_text().strip().split("\n")
+    puzzle_input = pathlib.Path("example1.txt").read_text().strip().split("\n")
     return aoc.parse_input(puzzle_input)
 
 
