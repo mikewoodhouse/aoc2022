@@ -1,8 +1,7 @@
-import aoc
-import pytest
 import pathlib
 
-DAY = "05"
+import aoc
+import pytest
 
 
 @pytest.fixture

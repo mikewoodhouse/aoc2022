@@ -1,8 +1,8 @@
 import pathlib
 
 
-def parse(puzzle_input):
-    """Parse input."""
+def parse_input(puzzle_input):
+    """Parse_input input."""
 
 
 def part1(data):
@@ -15,7 +15,7 @@ def part2(data):
 
 def solve(puzzle_input):
     """Solve the puzzle for the given input."""
-    data = parse(puzzle_input)
+    data = parse_input(puzzle_input)
     solution1 = part1(data)
     solution2 = part2(data)
     return solution1, solution2
