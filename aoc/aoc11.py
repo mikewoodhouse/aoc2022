@@ -1,5 +1,6 @@
 import math
 import pathlib
+from datetime import datetime
 
 from parse import findall, parse
 
@@ -16,17 +17,17 @@ class Monkey:
         self.if_false = parse("If false: throw to monkey {target:d}", lines[5].strip()).named["target"]
         self.inspect_count = 0
 
-    def inspect(self) -> None:
+    def inspect(self, divide_by: int = 3, modulo: int = 1) -> None:
         def update(op, by, value) -> int:
             operand = value if by == "old" else int(by)
             if op == "*":
-                return (value * operand) // 3
+                return (value * operand) // divide_by
             elif op == "+":
-                return (value + operand) // 3
+                return (value + operand) // divide_by
             else:
                 raise ValueError(f"unexpected operator: {op}")
 
-        self.items = [update(self.operator, self.operand, item) for item in self.items]
+        self.items = [update(self.operator, self.operand, item) % modulo for item in self.items]
         self.inspect_count += len(self.items)
 
     def throwings(self) -> list:
@@ -59,13 +60,16 @@ class Aoc11:
         lines = self.example()
         return self.solve(lines)
 
-    def solve(self, lines) -> int:
+    def solve(self, lines, divide_by: int = 3, times: int = 20) -> int:
         monkeys = [Monkey(lines[i : i + 6]) for i in range(0, len(lines), 6)]
-        for _ in range(20):
+        modulo = math.prod([m.divisor for m in monkeys])
+        for i in range(times):
             for monkey in monkeys:
-                monkey.inspect()
+                monkey.inspect(divide_by, modulo)
                 for target, item in monkey.throwings():
                     monkeys[target].receive(item)
+            if i % 20 == 0:
+                print(datetime.now(), i)
         top2 = sorted([m.inspect_count for m in monkeys], reverse=True)[:2]
         return math.prod(top2)
 
@@ -74,7 +78,8 @@ class Aoc11:
         return self.solve(lines)
 
     def solution2(self):
-        return "Not yet"
+        lines = self.input()
+        return self.solve(lines, 1, 10_000)
 
 
 if __name__ == "__main__":
