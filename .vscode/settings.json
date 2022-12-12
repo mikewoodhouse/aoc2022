@@ -5,7 +5,7 @@
   "python.linting.enabled": true,
   "python.formatting.provider": "black",
   "python.testing.pytestArgs": [
-    "day05"
+    "tests"
   ],
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,

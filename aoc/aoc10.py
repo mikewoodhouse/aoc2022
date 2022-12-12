@@ -4,7 +4,7 @@ import pathlib
 
 
 def parse_input(puzzle_input):
-    return puzzle_input
+    return puzzle_input.strip().split("\n")
 
 
 def part1(data: list[str]):
@@ -47,29 +47,32 @@ class Display:
         self.s = ["." for _ in range(240)]
 
     def set(self, idx, what):
-        self.s[idx - 1] = what
+        self.s[idx] = what
 
     def show(self):
         for i in range(0, 240, 40):
             print("".join(self.s[i : i + 40]))
 
 
+def make_sprite(pos: int) -> str:
+    if pos > 1:
+        return "." * (pos - 1) + "###" + "." * (40 - pos - 2)
+    return "###" + "." * 37
+
+
 def part2(data):
-    sprite = "###" + "." * 37
+    sprite = make_sprite(1)
     display = Display()
-    display.show()
     row = 0
     xreg = 1
-    pixel = 0
+    pixel = -1
+    cycle = 0
     cycles_until_done = 0
     value = 0
     program = iter(data)
     running = True
     while running:
-        print(f"set({pixel=}, {xreg=}, {sprite[xreg]=}")
-        display.set(row * 40 + pixel, sprite[xreg])
 
-        pixel += 1
         if cycles_until_done == 0:
             try:
                 line = next(program)
@@ -77,9 +80,8 @@ def part2(data):
             except StopIteration:
                 running = False
             xreg += value
-            sprite = "." * (xreg - 1) + "###" + "." * (40 - xreg - 2)
-            print(xreg, sprite)
-            # print(f"{cycle=} {line=} {xreg=} {cycles_until_done=}")
+            sprite = make_sprite(xreg)
+            # print(xreg, sprite)
 
             if line.startswith("noop"):
                 value = 0
@@ -89,10 +91,19 @@ def part2(data):
         else:
             # print("not done")
             cycles_until_done -= 1
+
+        pixel += 1
         if pixel > 39:
             row += 1
             pixel = 0
+        if row > 5:
+            break
+
+        print(f"{cycle}: set({row=} {pixel=}, {xreg=}, sprite[{pixel}]={sprite[pixel]}")
+        display.set(row * 40 + pixel, sprite[pixel])
+        cycle += 1
     display.show()
+    return 0
 
 
 def solve(puzzle_input):
@@ -103,6 +114,6 @@ def solve(puzzle_input):
 
 
 if __name__ == "__main__":
-    puzzle_input = pathlib.Path("example.txt").read_text().strip().split("\n")
+    puzzle_input = pathlib.Path("input/input10.txt").read_text()
     solutions = solve(puzzle_input)
     print("\n".join(str(solution) for solution in solutions))
